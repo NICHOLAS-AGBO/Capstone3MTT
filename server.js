@@ -21,7 +21,7 @@ console.log(process.env.MONGODB_URI)
 
 
 app.use(cors({
-    origin: 'http://localhost:3000', // or your frontend url
+    origin: 'https://capstone3mtt.vercel.app/',   //http://localhost:3000, or your frontend url
     credentials: true
 }))
 
