@@ -11,7 +11,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registerForm) {
         registerForm.addEventListener('submit', register);
     }
+    checkAuthStatus();
 });
+
+async function checkAuthStatus() {
+    try {
+        const response = await fetch(`${API_URL}/users/me`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            // User is authenticated, redirect to index.html if on login page
+            if (window.location.pathname.includes('login.html')) {
+                window.location.href = 'index.html';
+            }
+        } else {
+            // User is not authenticated, redirect to login.html if not already there
+            if (!window.location.pathname.includes('login.html')) {
+                window.location.href = 'login.html';
+            }
+        }
+    } catch (error) {
+        console.error('Auth check error:', error);
+    }
+}
 
 async function login(e) {
     e.preventDefault();
@@ -65,4 +90,23 @@ async function register(e) {
         console.error('Registration error:', error);
     }
 }
+async function logout() {
+    try {
+        const response = await fetch(`${API_URL}/users/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
 
+        if (response.ok) {
+            window.location.href = 'login.html';
+        } else {
+            alert('Logout failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        alert('An error occurred during logout. Please try again.');
+    }
+}
+
+// Expose logout function globally
+window.logout = logout;
