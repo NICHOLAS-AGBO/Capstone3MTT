@@ -11,22 +11,19 @@ dotenv.config();
 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-
-
-app.use(cors({
-    origin:  process.env.FRONTEND_URL || 'http://localhost:3000'|| 'https://capstone3mtt-3letankft-chukwunonso-kuzues-projects.vercel.app', //or your frontend url
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}))
+const PORT = process.env.PORT || 5000;
 
 // Middleware
+//app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 console.log(process.env.MONGODB_URI)
 
+
+app.use(cors({
+    origin:  process.env.FRONTEND_URL || 'http://localhost:3000', //or your frontend url
+    credentials: true
+}))
 
 // Session configuration
 app.use(session({
@@ -34,16 +31,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-    ttl: 14 * 24 * 60 * 60,
-    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: 'none', maxAge: 14 * 24 * 60 * 60} // 14 days
+    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: 'lax', maxAge: 24 * 60 * 60 * 1000} // 24 hours
   }));
-
-  app.use((req, res, next) => {
-    console.log('Session:', req.session);
-    console.log('Cookies:', req.cookies);
-    next();
-  });
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))

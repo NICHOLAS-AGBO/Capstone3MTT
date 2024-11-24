@@ -1,6 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+//const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
 
@@ -28,7 +28,6 @@ router.post('/register', async (req, res) => {
       await user.save();
       res.status(201).send({ message: 'User registered successfully' });
     } catch (error) {
-      console.error('Registration error:', error);
       if (error.code === 11000) {
         // Duplicate key error
         res.status(400).send({ message: 'Username or email already exists' });
@@ -40,52 +39,29 @@ router.post('/register', async (req, res) => {
 
   router.post('/login', async (req, res) => {
     try {
-      const { username, password } = req.body;
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ username: req.body.username });
       if (!user) {
         return res.status(400).send({ message: 'Invalid username or password' });
       }
-      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
       if (!isPasswordMatch) {
         return res.status(400).send({ message: 'Invalid username or password' });
       }
       req.session.userId = user._id;
-      await req.session.save();
-      console.log('Login successful - Session:', req.session);
-      res.send({ message: 'Logged in successfully', user: { id: user._id, username: user.username } });
+      res.send({ message: 'Logged in successfully' });
     } catch (error) {
-      console.error('Login error:', error);
       res.status(400).send(error);
     }
-  });
+});
 
-  router.post('/logout', (req, res) => {
-    console.log('Logout attempt - Session before destroy:', req.session);
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Logout error:', err);
+router.post('/logout', (req, res) => {
+    req.session.destroy((error) => {
+      if (error) {
         return res.status(500).send({ message: 'Could not log out, please try again' });
       }
       res.clearCookie('connect.sid');
-      console.log('Logout successful - Session destroyed');
       res.send({ message: 'Logged out successfully' });
     });
-  });
-  
-  router.get('/me', async (req, res) => {
-    try {
-      if (!req.session.userId) {
-        return res.status(401).send({ message: 'Not authenticated' });
-      }
-      const user = await User.findById(req.session.userId).select('-password');
-      if (!user) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-      res.send(user);
-    } catch (error) {
-      console.error('Get user error:', error);
-      res.status(500).send({ message: 'Server error' });
-    }
   });
 
 module.exports = router

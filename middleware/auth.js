@@ -1,9 +1,8 @@
 const User = require('../models/user');
 
 const auth = async (req, res, next) => {
-  console.log('Auth middleware - Session:', req.session);
   if (!req.session.userId) {
-    return res.status(401).json({ error: 'Please authenticate.' });
+    return res.status(401).send({ error: 'Please authenticate.' });
   }
 
   try {
@@ -14,8 +13,7 @@ const auth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error);
-    res.status(401).json({ error: 'Please authenticate.' });
+    res.status(401).send({ error: 'Please authenticate.' });
   }
 };
 

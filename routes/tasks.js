@@ -1,5 +1,5 @@
 const express = require('express');
-const Task = require('../models/Task');
+const Task = require('../models/task');
 const auth = require('../middleware/auth');
 
 const router = express.Router();
@@ -8,13 +8,11 @@ const router = express.Router();
 router.post('/', auth, async (req, res) => {
   try {
     const task = new Task({
-      ...req.body,
-      user: req.user._id
+      ...req.body, user: req.user._id
     });
     await task.save();
     res.status(201).send(task);
   } catch (error) {
-    console.error('Create task error:', error);
     res.status(400).send(error);
   }
 });
@@ -44,8 +42,20 @@ router.get('/', auth, async (req, res) => {
     const tasks = await Task.find(match).sort(sort);
     res.send(tasks);
   } catch (error) {
-    console.error('Get tasks error:', error);
     res.status(500).send();
+  }
+});
+
+// Get a specific task
+router.get('/:id', auth, async (req, res) => {
+  try {
+      const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
+      if (!task) {
+          return res.status(404).send();
+      }
+      res.send(task);
+  } catch (error) {
+      res.status(500).send();
   }
 });
 
@@ -56,22 +66,21 @@ router.patch('/:id', auth, async (req, res) => {
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
   if (!isValidOperation) {
-    return res.status(400).send({ error: 'Invalid updates!' });
+      return res.status(400).send({ error: 'Invalid updates!' });
   }
 
   try {
-    const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
+      const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
 
-    if (!task) {
-      return res.status(404).send();
-    }
+      if (!task) {
+          return res.status(404).send();
+      }
 
-    updates.forEach((update) => task[update] = req.body[update]);
-    await task.save();
-    res.send(task);
+      updates.forEach((update) => task[update] = req.body[update]);
+      await task.save();
+      res.send(task);
   } catch (error) {
-    console.error('Update task error:', error);
-    res.status(400).send(error);
+      res.status(400).send(error);
   }
 });
 
@@ -84,7 +93,6 @@ router.delete('/:id', auth, async (req, res) => {
     }
     res.send(task);
   } catch (error) {
-    console.error('Delete task error:', error);
     res.status(500).send();
   }
 });
