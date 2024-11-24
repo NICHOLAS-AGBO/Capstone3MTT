@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 
 app.use(cors({
-    origin:  process.env.CLIENT_URL || 'http://localhost:3000', //or your frontend url
+    origin:  process.env.CLIENT_URL || 'http://localhost:5000', //or your frontend url
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
