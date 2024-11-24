@@ -7,18 +7,18 @@ const User = require('../models/user')
 const router = express.Router();
 
 // GET route for /login to explain usage
-router.get('/login', (req, res) => {
-    res.status(200).json({
-      message: "This is the login endpoint. Please use POST method with username and password in the request body to login.",
-      example: {
-        method: "POST",
-        body: {
-          username: "your_username",
-          password: "your_password"
-        }
-      }
-    });
-  });
+// router.get('/login', (req, res) => {
+//     res.status(200).json({
+//       message: "This is the login endpoint. Please use POST method with username and password in the request body to login.",
+//       example: {
+//         method: "POST",
+//         body: {
+//           username: "your_username",
+//           password: "your_password"
+//         }
+//       }
+//     });
+//   });
   
 
 router.post('/register', async (req, res) => {
