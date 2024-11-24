@@ -21,8 +21,10 @@ console.log(process.env.MONGODB_URI)
 
 
 app.use(cors({
-    origin:  process.env.FRONTEND_URL || 'http://localhost:3000', //or your frontend url
-    credentials: true
+    origin:  process.env.FRONTEND_URL || 'http://localhost:3000'|| 'https://capstone3mtt-3letankft-chukwunonso-kuzues-projects.vercel.app', //or your frontend url
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
 // Session configuration
@@ -31,7 +33,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-    cookie: { secure: process.env.NODE_ENV === 'production', domain:'.vercel.app', httpOnly: true,sameSite: 'lax', maxAge: 24 * 60 * 60 * 1000} // 24 hours
+    ttl: 14 * 24 * 60 * 60,
+    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: 'none', maxAge: 14 * 24 * 60 * 60} // 14 days
   }));
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
