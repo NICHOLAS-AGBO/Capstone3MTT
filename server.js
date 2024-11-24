@@ -13,11 +13,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-//app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-console.log(process.env.MONGODB_URI)
 
 
 app.use(cors({
@@ -26,6 +21,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
+
+// Middleware
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+console.log(process.env.MONGODB_URI)
+
 
 // Session configuration
 app.use(session({
@@ -36,6 +37,13 @@ app.use(session({
     ttl: 14 * 24 * 60 * 60,
     cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: 'none', maxAge: 14 * 24 * 60 * 60} // 14 days
   }));
+
+  app.use((req, res, next) => {
+    console.log('Session:', req.session);
+    console.log('Cookies:', req.cookies);
+    next();
+  });
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
