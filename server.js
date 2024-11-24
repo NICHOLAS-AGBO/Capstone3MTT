@@ -19,6 +19,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
     origin:  process.env.CLIENT_URL || 'http://localhost:3000', //or your frontend url
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
 // Middleware
@@ -35,6 +37,14 @@ app.use(session({
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', maxAge: 7 * 24 * 60 * 60 * 1000} // 1 week 
   }));
+
+  app.use((req, res, next) => {
+    console.log('Session ID:', req.sessionID);
+    console.log('Session:', req.session);
+    console.log('Cookies:', req.headers.cookie);
+    next();
+  })
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
@@ -51,6 +61,9 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
     console.log(process.env.MONGODB_URI)
+    console.log('MongoDB URI:', process.env.MONGODB_URI);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('CLIENT_URL:', process.env.CLIENT_URL);
 }
 );
 
