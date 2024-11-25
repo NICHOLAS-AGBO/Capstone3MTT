@@ -49,6 +49,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
         req.session.userId = user._id;
+        await req.session.save();
         res.json({ message: 'Logged in successfully', user: { id: user._id, username: user.username } });
     } catch (error) {
         console.error('Login error:', error);
