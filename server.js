@@ -46,7 +46,8 @@ app.use(session({
   })
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true,
+  useUnifiedTopology: true,})
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Could not connect to MongoDB', error));
 
@@ -58,6 +59,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
     console.log(process.env.MONGODB_URI)
@@ -67,6 +70,11 @@ app.listen(PORT, () => {
 }
 );
 
+// Test the session
+setTimeout(() => {
+  console.log('Session store:', app.get('trust proxy'));
+}, 5000);
 
+module.exports = app;
 
 
