@@ -46,8 +46,8 @@ app.use(session({
   })
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true,
-  useUnifiedTopology: true,})
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true,}
+)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Could not connect to MongoDB', error));
 
@@ -71,9 +71,9 @@ app.listen(PORT, () => {
 );
 
 // Test the session
-setTimeout(() => {
-  console.log('Session store:', app.get('trust proxy'));
-}, 5000);
+// setTimeout(() => {
+//   console.log('Session store:', app.get('trust proxy'));
+// }, 5000);
 
 module.exports = app;
 
