@@ -1,6 +1,5 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-//const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
 
@@ -49,13 +48,19 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
         req.session.userId = user._id;
-        await req.session.save();
-        res.json({ message: 'Logged in successfully', user: { id: user._id, username: user.username } });
+        req.session.save((err) => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.status(500).json({ message: 'Error logging in' });
+            }
+            res.json({ message: 'Logged in successfully', user: { id: user._id, username: user.username } });
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Server error during login' });
     }
 });
+
 
 router.post('/logout', (req, res) => {
     req.session.destroy((error) => {

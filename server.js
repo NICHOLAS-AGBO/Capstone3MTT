@@ -11,13 +11,13 @@ dotenv.config();
 
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 
 
 
 app.use(cors({
-    origin:  process.env.CLIENT_URL || 'http://localhost:5000', //or your frontend url
+    origin:  process.env.CLIENT_URL || 'http://localhost:3000', //or your frontend url
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -34,16 +34,16 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI, collectionName: 'sessions' }),
     cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', maxAge: 7 * 24 * 60 * 60} // 1 week 
   }));
 
-  app.use((req, res, next) => {
-    console.log('Session ID:', req.sessionID);
-    console.log('Session:', req.session);
-    console.log('Cookies:', req.headers.cookie);
-    next();
-  })
+  // app.use((req, res, next) => {
+  //   console.log('Session ID:', req.sessionID);
+  //   console.log('Session:', req.session);
+  //   console.log('Cookies:', req.headers.cookie);
+  //   next();
+  // })
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true,}
@@ -55,9 +55,9 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true,}
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
 
 
 

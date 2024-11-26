@@ -22,14 +22,13 @@ async function checkAuthStatus() {
         });
 
         if (response.ok) {
-            const user = await response.json();
-            // User is authenticated, redirect to index.html if on login page
-            if (window.location.pathname.includes('login.html')) {
+            // User is authenticated
+            if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
                 window.location.href = 'index.html';
             }
         } else {
-            // User is not authenticated, redirect to login.html if not already there
-            if (!window.location.pathname.includes('login.html')) {
+            // User is not authenticated
+            if (!window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
                 window.location.href = 'login.html';
             }
         }
@@ -60,6 +59,7 @@ async function login(e) {
         }
     } catch (error) {
         console.error('Login error:', error);
+        alert('An error occurred during login. Please try again.');
     }
 }
 
@@ -88,8 +88,10 @@ async function register(e) {
         }
     } catch (error) {
         console.error('Registration error:', error);
+        alert('An error occurred during registration. Please try again.');
     }
 }
+
 async function logout() {
     try {
         const response = await fetch(`${API_URL}/users/logout`, {
@@ -110,3 +112,4 @@ async function logout() {
 
 // Expose logout function globally
 window.logout = logout;
+
