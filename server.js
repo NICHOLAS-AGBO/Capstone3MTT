@@ -26,24 +26,32 @@ app.use(cors({
 // Middleware
 //app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 console.log(process.env.MONGODB_URI)
 
 // Session configuration
 app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI, collectionName: 'sessions' }),
-    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true,sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', maxAge: 7 * 24 * 60 * 60} // 1 week 
-  }));
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ 
+    mongoUrl: process.env.MONGODB_URI,
+    collectionName: 'sessions'
+  }),
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  }
+}));
 
-  // app.use((req, res, next) => {
-  //   console.log('Session ID:', req.sessionID);
-  //   console.log('Session:', req.session);
-  //   console.log('Cookies:', req.headers.cookie);
-  //   next();
-  // })
+  app.use((req, res, next) => {
+    console.log('Session:', req.session);
+    console.log('Cookies:', req.headers.cookie);
+    next();
+  });
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true,}

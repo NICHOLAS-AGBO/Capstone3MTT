@@ -21,6 +21,8 @@ async function checkAuthStatus() {
             credentials: 'include'
         });
 
+        console.log('Auth check response:', response.status, response.statusText);
+
         if (response.ok) {
             // User is authenticated
             if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
@@ -51,6 +53,7 @@ async function login(e) {
         });
 
         const data = await response.json();
+        console.log('Login response:', response.status, data);
 
         if (response.ok) {
             window.location.href = 'index.html';
