@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function checkAuthStatus() {
     try {
-        const response = await fetch(`${API_URL}/users/me`, {
+        const response = await fetch(`${API_URL}/tasks`, {
             method: 'GET',
             credentials: 'include'
         });
