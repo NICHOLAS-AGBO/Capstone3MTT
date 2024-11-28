@@ -28,6 +28,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')))
 app.enable('trust proxy');
+
 // Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -39,7 +40,7 @@ app.use(session({
   }),
   cookie: { 
     secure: process.env.NODE_ENV === 'production',
-    // httpOnly: true,
+    httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   }, proxy: true
