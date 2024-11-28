@@ -39,7 +39,7 @@ app.use(session({
     collectionName: 'sessions'
   }),
   cookie: { 
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production' || true,
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
