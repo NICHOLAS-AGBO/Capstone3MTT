@@ -114,5 +114,5 @@ async function logout() {
 }
 
 // Expose logout function globally
-window.logout = logout;
+//window.logout = logout;
 
