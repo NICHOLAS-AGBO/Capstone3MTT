@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 const router = express.Router();
-
 router.post('/register', async (req, res) => {
     try {
         const { firstName, lastName, email, username, password } = req.body;
@@ -30,7 +29,7 @@ router.post('/login', async (req, res) => {
         if (!isPasswordMatch) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
-        req.session.userId = user._id;
+        req.session.userId = user._id.toString();
         req.session.save((err) => {
             if (err) {
                 console.error('Session save error:', err);

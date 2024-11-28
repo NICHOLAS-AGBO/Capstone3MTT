@@ -1,4 +1,4 @@
-const API_URL = '/api';
+let API_URL = '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
@@ -31,7 +31,7 @@ async function checkAuthStatus() {
         } else {
             // User is not authenticated
             if (!window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         }
     } catch (error) {

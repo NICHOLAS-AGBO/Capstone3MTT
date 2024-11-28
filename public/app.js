@@ -1,4 +1,3 @@
-const API_URL = '/api';
 
 // DOM Elements
 const logoutBtn = document.getElementById('logout-btn');
@@ -15,17 +14,17 @@ searchBtn.addEventListener('click', searchTasks);
 priorityFilter.addEventListener('change', fetchTasks);
 
 // Check authentication status on page load
-checkAuthStatus();
+void checkAuth();
 
-async function checkAuthStatus() {
+async function checkAuth() {
     try {
         const response = await fetch(`${API_URL}/tasks`, {
             credentials: 'include'
         });
-        if (!response.ok) {
-            window.location.href = 'login.html';
+        if (response.ok) {
+            void fetchTasks();
         } else {
-            fetchTasks();
+            window.location.href = 'login.html';
         }
     } catch (error) {
         console.error('Auth check error:', error);
@@ -240,6 +239,4 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// Initial fetch of tasks
-fetchTasks();
 
